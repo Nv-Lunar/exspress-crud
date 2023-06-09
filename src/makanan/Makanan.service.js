@@ -2,6 +2,7 @@
 //berfungsi agar function/code kita reusable
 //dapat digunakan dengan hanya require
 
+const { Prisma } = require("@prisma/client");
 const { Makanan } = require("../db");
 const prisma = require("../db/index.js");
 
@@ -15,68 +16,83 @@ const getAllMakanan = async (req, res) => {
   
 
 };
-/*  */
-const getMakananById = async (id) => {
-  if (typeof id !== "number") {
-    throw Error("Id Is Not a Number");
+const getMakananById = async(req, res) =>
+{
+  const MakananId = parseInt(req.params.id);
+  try {
+    const Makanan = await prisma.Makanan.findUnique({
+      where : {
+        id : MakananId
+      }
+    })
+    res.status(200).send(Makanan);
+  } catch (error) {
+    res.status(500).json({msg : "Internal server error"})
   }
-  const Makanan = await prisma.Makanan.findUnique({
-    where: {
-      id,
-    },
-  });
-  if (!Makanan) {
-    throw Error("Makanan Is Not Found");
-  }
-  return Makanan;
-};
+}
 
-const postCreateMakanan = async (newMakananData) => {
+const postCreateMakanan = async (req, res) => {
+  const newMakananData = req.body;
   const { Harga, Jumlah } = newMakananData;
   const Total = Harga * Jumlah;
-  const Makanan = await prisma.Makanan.create({
-    data: {
-      Makanan: newMakananData.Makanan,
-      Harga: Harga,
-      Jumlah: Jumlah,
-      Total: Total,
-      Gambar: newMakananData.Gambar,
-    },
-  });
-  return Makanan;
-};
-
-const deleteMakananById = async (id) => {
-    await getMakananById(id);
-    await prisma.Makanan.delete({
-      where: {
-        id,
+  try {
+    const Makanan = await prisma.Makanan.create({
+      data: {
+        Makanan: newMakananData.Makanan,
+        Harga: Harga,
+        Jumlah: Jumlah,
+        Total: Total,
+        Gambar: newMakananData.Gambar,
       },
     });
+    res.send(Makanan)
+  } catch (error) {
+    res.status(500).json({msg : "Internal server error"})
+  }
 };
 
-const patchMakananById = async(UpdateMakananData,id) => {
-  await getMakananById(id);
-  const {Harga, Jumlah} = UpdateMakananData;
+const deleteMakananById = async (req, res) => {
+  const MakananId = parseInt(req.params.id);
+  try {
+    await prisma.Makanan.delete({
+      where: {
+        id : MakananId
+      },
+    });
+    res.status(200).json({msg : "ok"})
+  } catch (error) {
+    res.status(500).json({msg : "Internal server error"})
+  }
+};
+
+const putMakananById = async(req, res) => {
+  const MakananId = parseInt( req.params.id);
+  const editMakananData = req.body;
+  const { Harga, Jumlah } = editMakananData;
   const Total = Harga * Jumlah;
-
-  const Makanan = await patchMakananById
-}
-
-const putMakananById = async(UpdateMakananData,id) => {
-  await getMakananById(id);
-  const Makanan = await putMakananById(UpdateMakananData,id);
-  if(!(UpdateMakananData.Makanan && Harga && Jumlah && UpdateMakananData.Gambar)){
-    return res.status(404).json({ msg : "Data tdk lengkap"})
-  };
-  return Makanan;
-}
+  try {
+    const Makanan = await prisma.Makanan.update({
+      where : {
+        id : MakananId,
+      },
+      data : {
+        Makanan: editMakananData.Makanan,
+        Harga: Harga,
+        Jumlah: Jumlah,
+        Total: Total,
+        Gambar: editMakananData.Gambar,
+      }
+    })
+    res.status(200).json({msg : "ok"})
+  } catch (error) {
+    res.status(500).json({msg : "Internal server error"})
+  }
+};
 
 module.exports = {
   getAllMakanan,
   getMakananById,
   postCreateMakanan,
   deleteMakananById,
-  patchMakananById,
   putMakananById
 };
