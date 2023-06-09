@@ -3,13 +3,19 @@
 //dapat digunakan dengan hanya require
 
 const { Makanan } = require("../db");
-const prisma = require("../db");
-const getAllMakanan = async () => {
-  const Makanan = await findMakanan();
+const prisma = require("../db/index.js");
 
-  return Makanan;
+const getAllMakanan = async (req, res) => {
+  try {
+    const Makanan = await prisma.Makanan.findMany();
+    res.status(200).send(Makanan);
+  } catch (error) {
+    res.status(500).json({msg : "Internal server error"})
+  }
+  
+
 };
-
+/*  */
 const getMakananById = async (id) => {
   if (typeof id !== "number") {
     throw Error("Id Is Not a Number");

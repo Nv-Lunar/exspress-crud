@@ -5,11 +5,7 @@ const { getAllMakanan, getMakananById, postCreateMakanan, deleteMakananById, put
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-    const Makanan = await getAllMakanan;
-
-    res.send(Makanan);
-})
+router.get("/", getAllMakanan)
 
 router.get("/:id", async (req, res) => {
   try {
