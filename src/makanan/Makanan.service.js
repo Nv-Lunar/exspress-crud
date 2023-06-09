@@ -54,27 +54,15 @@ const patchMakananById = async(UpdateMakananData,id) => {
   const {Harga, Jumlah} = UpdateMakananData;
   const Total = Harga * Jumlah;
 
-  const Makanan = await prisma.Makanan.update({
-    where : {
-      id,
-    },
-    data : {
-      Makanan : UpdateMakananData.Makanan ,
-      Harga : Harga ,
-      Jumlah : Jumlah ,
-      Total : Total ,
-      Gambar : UpdateMakananData.Gambar ,
-    },
-  });
-  return Makanan;
+  const Makanan = await patchMakananById
 }
 
 const putMakananById = async(UpdateMakananData,id) => {
   await getMakananById(id);
+  const Makanan = await putMakananById(UpdateMakananData,id);
   if(!(UpdateMakananData.Makanan && Harga && Jumlah && UpdateMakananData.Gambar)){
-    return res.status(400).send("Some Fields Are Missing");
-  }
-  const Makanan = await patchMakananById(UpdateMakananData,id)
+    return res.status(404).json({ msg : "Data tdk lengkap"})
+  };
   return Makanan;
 }
 

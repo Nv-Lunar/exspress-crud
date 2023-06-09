@@ -54,10 +54,9 @@ router.put("/:id", async(req, res) => {
     res.send({
     data : Makanan,
     messege : "Data Berhasil Di Update!",
-    errMessege : "Data Tidak Berhasil Di Update!"
-  })
+  });
 } catch (error) {
- res.status(400).send(error.errMessege); 
+ res.status(400).send("Data Tidak Berhasil Di Upadate"); 
 }
 });
 
@@ -69,10 +68,9 @@ router.patch("/:id", async (req, res) => {
     res.send({
       data : Makanan,
       messege : "Data Berhasil Di Update!",
-      errMessege : "Data Tidak Berhasil Di Update!"
-    })
+    });
   } catch (error) {
-   res.status(400).send(error.errMessege); 
+   res.status(400).send("Data tidak berhasil di update"); 
   }
 });
 
