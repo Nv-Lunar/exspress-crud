@@ -13,9 +13,9 @@ app.get("/api", (req, res) => {
   res.send("Hello My Api");
 });
 
-const MakananController = require('./Makanan/Makanan.Controller')
+const MakananController = require('./makanan/Makanan.controller.js')
 
-app.use('/Makanan', MakananController)
+app.use(MakananController)
 
 app.listen(PORT, () => {
   console.log("Express API running in port: " + PORT);
